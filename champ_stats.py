@@ -3,12 +3,6 @@
 import json
 #Used to get the URL
 import requests
-#Used to modify a file
-import fileinput
-#Used to download the images
-import urllib.request
-#Used to interact with the OS file system
-import os
 #Used to export the data to a CSV
 import csv
 

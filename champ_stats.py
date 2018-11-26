@@ -8,17 +8,18 @@ import csv
 
 
 def getDataURL():
+    #Talks to Riots DataDragon to check the date version
     dataURL = "https://ddragon.leagueoflegends.com/realms/euw.json"
     response = requests.get(dataURL)
     euwJson = response.json()
     dataVersion = euwJson['n']['champion']
-    # print("Data version is " + dataVersion)
+    #Using the data version, it gets the URL of the JSON file for the champ data.
     dataURL = "http://ddragon.leagueoflegends.com/cdn/" + dataVersion + "/data/en_GB/champion.json"
-    # print("Data version is " + dataURL)
     return dataURL
 
 
 def getJsons():
+    #Reads the champ JSON and returns the JSON and the champion list.
     response = getDataURL()
     response = requests.get(response)
     dataJSON = response.json()
@@ -26,13 +27,16 @@ def getJsons():
     return dataJSON, champList
 
 def levelMath(base, perLevel, level):
+    #This can be used for the level math to work out what stats a champ would have at certain levels. Currently not used.
     levelStat = base + (perLevel * level)
     return levelStat
 
 
 def createFile():
     dataJSON, champList = getJsons()
+    #Opens the file
     with open('champStats.csv', 'w', newline='', encoding='utf8') as csv_file:
+        #Writes the header row then cycles through the champs and prints the data in to the CSV.
         writer = csv.writer(csv_file, delimiter=',')
         writer.writerow(["Name", "HP", "HP Per Level", "MP", "MP Per Level", "Move Speed", "Armor", "Armour Per Level", "Spell Block", "Spell Block Per Level", "Attack Range", "HP Regen", "HP Regen Per Level", "MP Regen", "MP Regen Per Level", "Attack Damage", "Attack Damage Per Level", "Attack Speed", "Attack Speed Per Level"])
         for champ in champList:

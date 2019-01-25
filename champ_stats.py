@@ -3,69 +3,64 @@
 import json
 #Used to get the URL
 import requests
-#Used to modify a file
-import fileinput
 #Used to download the images
 import urllib.request
-#Used to interact with the OS file system
-import os
 #Used to export the data to a CSV
 import csv
 
 
-def getDataURL():
-    dataURL = "https://ddragon.leagueoflegends.com/realms/euw.json"
-    response = requests.get(dataURL)
-    euwJson = response.json()
-    dataVersion = euwJson['n']['champion']
-    # print("Data version is " + dataVersion)
-    dataURL = "http://ddragon.leagueoflegends.com/cdn/" + dataVersion + "/data/en_GB/champion.json"
-    # print("Data version is " + dataURL)
-    return dataURL
+def get_data_url():
+    data_url = "https://ddragon.leagueoflegends.com/realms/euw.json"
+    response = requests.get(data_url)
+    euw_json = response.json()
+    data_version = euw_json['n']['champion']
+    data_url = "http://ddragon.leagueoflegends.com/cdn/" + data_version + "/data/en_GB/champion.json"
+    return data_url
 
 
-def getJsons():
-    response = getDataURL()
+def get_jsons():
+    response = get_data_url()
     response = requests.get(response)
-    dataJSON = response.json()
-    champList = dataJSON['data'].keys()
-    return dataJSON, champList
+    data_json = response.json()
+    champ_list = data_json['data'].keys()
+    return data_json, champ_list
 
-def levelMath(base, perLevel, level):
-    levelStat = base + (perLevel * level)
-    return levelStat
+# Not used, but could be implemented to calculate stats at different levels
+def level_math(base, per_level, level):
+    level_stat = base + (per_level * level)
+    return level_stat
 
 
-def createFile():
-    dataJSON, champList = getJsons()
+def create_file():
+    data_json, champ_list = get_jsons()
     with open('champStats.csv', 'w', newline='', encoding='utf8') as csv_file:
         writer = csv.writer(csv_file, delimiter=',')
         writer.writerow(["Name", "HP", "HP Per Level", "MP", "MP Per Level", "Move Speed", "Armor", "Armour Per Level", "Spell Block", "Spell Block Per Level", "Attack Range", "HP Regen", "HP Regen Per Level", "MP Regen", "MP Regen Per Level", "Attack Damage", "Attack Damage Per Level", "Attack Speed", "Attack Speed Per Level"])
-        for champ in champList:
-            name = dataJSON['data'][champ]['name']
-            hp = dataJSON['data'][champ]['stats']['hp']
-            hpperlevel = dataJSON['data'][champ]['stats']['hpperlevel']
-            mp = dataJSON['data'][champ]['stats']['mp']
-            mpperlevel = dataJSON['data'][champ]['stats']['mpperlevel']
-            movespeed = dataJSON['data'][champ]['stats']['movespeed']
-            armor = dataJSON['data'][champ]['stats']['armor']
-            armorperlevel = dataJSON['data'][champ]['stats']['armorperlevel']
-            spellblock = dataJSON['data'][champ]['stats']['spellblock']
-            spellblockperlevel = dataJSON['data'][champ]['stats']['spellblockperlevel']
-            attackrange = dataJSON['data'][champ]['stats']['attackrange']
-            hpregen = dataJSON['data'][champ]['stats']['hpregen']
-            hpregenperlevel = dataJSON['data'][champ]['stats']['hpregenperlevel']
-            mpregen = dataJSON['data'][champ]['stats']['mpregen']
-            mpregenperlevel = dataJSON['data'][champ]['stats']['mpregenperlevel']
-            attackdamage = dataJSON['data'][champ]['stats']['attackdamage']
-            attackdamageperlevel = dataJSON['data'][champ]['stats']['attackdamageperlevel']
-            attackspeed = dataJSON['data'][champ]['stats']['attackspeed']
-            attackspeedperlevel = dataJSON['data'][champ]['stats']['attackspeedperlevel']
+        for champ in champ_list:
+            name = data_json['data'][champ]['name']
+            hp = data_json['data'][champ]['stats']['hp']
+            hpperlevel = data_json['data'][champ]['stats']['hpperlevel']
+            mp = data_json['data'][champ]['stats']['mp']
+            mpperlevel = data_json['data'][champ]['stats']['mpperlevel']
+            movespeed = data_json['data'][champ]['stats']['movespeed']
+            armor = data_json['data'][champ]['stats']['armor']
+            armorperlevel = data_json['data'][champ]['stats']['armorperlevel']
+            spellblock = data_json['data'][champ]['stats']['spellblock']
+            spellblockperlevel = data_json['data'][champ]['stats']['spellblockperlevel']
+            attackrange = data_json['data'][champ]['stats']['attackrange']
+            hpregen = data_json['data'][champ]['stats']['hpregen']
+            hpregenperlevel = data_json['data'][champ]['stats']['hpregenperlevel']
+            mpregen = data_json['data'][champ]['stats']['mpregen']
+            mpregenperlevel = data_json['data'][champ]['stats']['mpregenperlevel']
+            attackdamage = data_json['data'][champ]['stats']['attackdamage']
+            attackdamageperlevel = data_json['data'][champ]['stats']['attackdamageperlevel']
+            attackspeed = data_json['data'][champ]['stats']['attackspeed']
+            attackspeedperlevel = data_json['data'][champ]['stats']['attackspeedperlevel']
             writer.writerow([name, hp, hpperlevel, mp, mpperlevel, movespeed, armor, armorperlevel, spellblock, spellblockperlevel, attackrange, hpregen, hpregenperlevel, mpregen, mpregenperlevel, attackdamage, attackdamageperlevel, attackspeed, attackspeedperlevel])
 
 
 def main():
-    createFile()
+    create_file()
 
 
 #This starts my program!

@@ -3,8 +3,6 @@
 import json
 #Used to get the URL
 import requests
-#Used to download the images
-import urllib.request
 #Used to export the data to a CSV
 import csv
 

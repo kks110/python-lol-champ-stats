@@ -1,27 +1,25 @@
-
-#Used for processing JSONS files
-import json
-#Used to get the URL
+# Used to get the URL
 import requests
-#Used to export the data to a CSV
+# Used to export the data to a CSV
 import csv
 
 
-def get_data_url():
-    data_url = "https://ddragon.leagueoflegends.com/realms/euw.json"
-    response = requests.get(data_url)
-    euw_json = response.json()
-    data_version = euw_json['n']['champion']
-    data_url = "http://ddragon.leagueoflegends.com/cdn/" + data_version + "/data/en_GB/champion.json"
-    return data_url
+def data_version():
+    ddragon = "https://ddragon.leagueoflegends.com/realms/euw.json"
+    euw_json = requests.get(ddragon).json()
+    return euw_json['n']['champion']
+
+
+def build_data_url():
+    return "http://ddragon.leagueoflegends.com/cdn/" + data_version() + "/data/en_GB/champion.json"
 
 
 def get_jsons():
-    response = get_data_url()
-    response = requests.get(response)
-    data_json = response.json()
+    data_url = build_data_url()
+    data_json = requests.get(data_url).json()
     champ_list = data_json['data'].keys()
     return data_json, champ_list
+
 
 # Not used, but could be implemented to calculate stats at different levels
 def level_math(base, per_level, level):
@@ -29,11 +27,36 @@ def level_math(base, per_level, level):
     return level_stat
 
 
+def row_headings():
+    return [
+        "Name",
+        "HP",
+        "HP Per Level",
+        "MP",
+        "MP Per Level",
+        "Move Speed",
+        "Armor",
+        "Armour Per Level",
+        "Spell Block",
+        "Spell Block Per Level",
+        "Attack Range",
+        "HP Regen",
+        "HP Regen Per Level",
+        "MP Regen",
+        "MP Regen Per Level",
+        "Attack Damage",
+        "Attack Damage Per Level",
+        "Attack Speed",
+        "Attack Speed Per Level"
+    ]
+
+
 def create_file():
     data_json, champ_list = get_jsons()
-    with open('champStats.csv', 'w', newline='', encoding='utf8') as csv_file:
+    file_name = 'patch_' + data_version() + '_champStats.csv'
+    with open(file_name, 'w', newline='', encoding='utf8') as csv_file:
         writer = csv.writer(csv_file, delimiter=',')
-        writer.writerow(["Name", "HP", "HP Per Level", "MP", "MP Per Level", "Move Speed", "Armor", "Armour Per Level", "Spell Block", "Spell Block Per Level", "Attack Range", "HP Regen", "HP Regen Per Level", "MP Regen", "MP Regen Per Level", "Attack Damage", "Attack Damage Per Level", "Attack Speed", "Attack Speed Per Level"])
+        writer.writerow(row_headings())
         for champ in champ_list:
             name = data_json['data'][champ]['name']
             hp = data_json['data'][champ]['stats']['hp']
@@ -61,6 +84,5 @@ def main():
     create_file()
 
 
-#This starts my program!
 if __name__ == "__main__":
     main()
